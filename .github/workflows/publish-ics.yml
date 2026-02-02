@@ -2,19 +2,39 @@ name: Build and publish ASW ICS
 
 on:
   schedule:
-    # --- 30-minute intervals (UTC times for German Winter Time / CET) ---
-    - cron: "0,30 5 * * 1-5"      # 06:00 - 07:00 CET (Mon-Fri)
-    - cron: "0,30 8-9 * * 1-5"    # 09:00 - 11:00 CET (Mon-Fri)
-    - cron: "0 10 * * 1-5"       # 11:00 CET (exact start)
-    - cron: "0,30 12-13 * * 1-5" # 13:00 - 15:00 CET (Mon-Fri)
-    - cron: "0 14 * * 1-5"       # 15:00 CET (exact start)
-    - cron: "0,30 15-20 * * 1-5" # 16:00 - 22:00 CET (Mon-Fri)
-    - cron: "0 21 * * 1-5"       # 22:00 CET (final trigger)
+    # ----------------------------------------------------
+    # --- WINTER TIME (CET / UTC+1) LOGIC: Nov - Mar ---
+    # Runs in months 1,2,3,11,12 (Jan, Feb, Mar, Nov, Dec). DE Time = UTC Hour + 1
+    # ----------------------------------------------------
+    # 30-Minuten-Intervalle:
+    - cron: "0,30 5 * 1,2,3,11,12 1-5"      # 06:00 - 07:00 CET (Mon-Fri)
+    - cron: "0,30 8-9 * 1,2,3,11,12 1-5"    # 09:00 - 11:00 CET (Mon-Fri)
+    - cron: "0 10 * 1,2,3,11,12 1-5"       # 11:00 CET (exact start)
+    - cron: "0,30 12-13 * 1,2,3,11,12 1-5" # 13:00 - 15:00 CET (Mon-Fri)
+    - cron: "0 14 * 1,2,3,11,12 1-5"       # 15:00 CET (exact start)
+    - cron: "0,30 15-20 * 1,2,3,11,12 1-5" # 16:00 - 22:00 CET (Mon-Fri)
+    - cron: "0 21 * 1,2,3,11,12 1-5"        # 22:00 CET (final trigger)
+    # 15-Minuten-Intervalle (Lückenfüller):
+    - cron: "*/15 6-7 * 1,2,3,11,12 1-5"    # 07:00 - 09:00 CET (Mon-Fri)
+    - cron: "*/15 10-11 * 1,2,3,11,12 1-5"  # 11:00 - 13:00 CET (Mon-Fri)
+    - cron: "*/15 14 * 1,2,3,11,12 1-5"     # 15:00 - 16:00 CET (Mon-Fri)
 
-    # --- 15-minute intervals (Fillers in UTC) ---
-    - cron: "*/15 6-7 * * 1-5"   # 07:00 - 09:00 CET (Mon-Fri)
-    - cron: "*/15 10-11 * * 1-5" # 11:00 - 13:00 CET (Mon-Fri)
-    - cron: "*/15 14 * * 1-5"    # 15:00 - 16:00 CET (Mon-Fri)
+    # ----------------------------------------------------
+    # --- SUMMER TIME (CEST / UTC+2) LOGIC: Apr - Oct ---
+    # Runs in months 4-10 (Apr-Oct). DE Time = UTC Hour + 2
+    # ----------------------------------------------------
+    # 30-Minuten-Intervalle:
+    - cron: "0,30 4 * 4-10 1-5"      # 06:00 - 07:00 CEST (Mon-Fri)
+    - cron: "0,30 7-8 * 4-10 1-5"    # 09:00 - 11:00 CEST (Mon-Fri)
+    - cron: "0 9 * 4-10 1-5"        # 11:00 CEST (exact start)
+    - cron: "0,30 11-12 * 4-10 1-5"  # 13:00 - 15:00 CEST (Mon-Fri)
+    - cron: "0 13 * 4-10 1-5"        # 15:00 CEST (exact start)
+    - cron: "0,30 14-19 * 4-10 1-5"  # 16:00 - 22:00 CEST (Mon-Fri)
+    - cron: "0 20 * 4-10 1-5"        # 22:00 CEST (final trigger)
+    # 15-Minuten-Intervalle (Lückenfüller):
+    - cron: "*/15 5-6 * 4-10 1-5"    # 07:00 - 09:00 CEST (Mon-Fri)
+    - cron: "*/15 9-10 * 4-10 1-5"   # 11:00 - 13:00 CEST (Mon-Fri)
+    - cron: "*/15 13 * 4-10 1-5"     # 15:00 - 16:00 CEST (Mon-Fri)
   workflow_dispatch:
 
 concurrency:
