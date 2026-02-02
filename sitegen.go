@@ -12,9 +12,14 @@ import (
 )
 
 var (
-	publicDir  = getenv("ASW_PUBLIC_DIR", "public")
+	publicDir = getenv("ASW_PUBLIC_DIR", "public")
 	sourcePage = getenv("ASW_SOURCE_PAGE",
 		"https://www.asw-ggmbh.de/laufender-studienbetrieb/stundenplaene")
+
+	// Link to the GitHub workflow file (used in the highlight box).
+	// Override via env if you fork/rename the repo.
+	workflowURL = getenv("ASW_WORKFLOW_URL",
+		"https://github.com/KARRENKAUF/aswCalender/blob/main/.github/workflows/publish-ics.yml")
 )
 
 // Computed at runtime from publicDir
@@ -216,6 +221,35 @@ func niceLabel(fname string) string {
 	return strings.ReplaceAll(base, "_", " ")
 }
 
+// Single highlight box: combines update cadence + quick setup
+func highlightBoxHTML() string {
+	var b strings.Builder
+
+	b.WriteString("<div class='disclaimer'><div>")
+	b.WriteString("<div class='disclaimer-title'>Update info & quick setup</div>")
+	b.WriteString("<div class='disclaimer-body'>")
+
+	b.WriteString("<p>")
+	b.WriteString("This site is generated automatically by a GitHub Actions cron job. ")
+	b.WriteString("Updates typically run on weekdays between <b>06:00 and 22:00</b> (Germany time). ")
+	b.WriteString("If your calendar app still shows old data, wait for the next run or re-subscribe. ")
+	b.WriteString("Workflow: <a href='" + html.EscapeString(workflowURL) + "' target='_blank' rel='noopener noreferrer'>")
+	b.WriteString(html.EscapeString(".github/workflows/publish-ics.yml"))
+	b.WriteString("</a>.")
+	b.WriteString("</p>")
+
+	b.WriteString("<p class='disclaimer-quick'>")
+	b.WriteString("<b>Quick setup:</b> Use <b>Subscribe</b> for webcal subscription (best supported on Apple). ")
+	b.WriteString("For Google Calendar on Android/Windows, <a href='help-google.html'>follow this guide</a>. ")
+	b.WriteString("Alternatively use <b>Copy URL</b> to add the feed manually or <b>Download file</b> for a one-time import.")
+	b.WriteString("</p>")
+
+	b.WriteString("</div>")
+	b.WriteString("</div></div>")
+
+	return b.String()
+}
+
 func renderPage(path, title, subtitle string, blocks fileGroup, blockOrder []string, showToolbar bool, navToAll bool, navToIndex bool) error {
 	var b strings.Builder
 
@@ -240,6 +274,7 @@ func renderPage(path, title, subtitle string, blocks fileGroup, blockOrder []str
 	b.WriteString("<a class='navlink secondary' href='" + html.EscapeString(sourcePage) + "'>Source page</a>")
 	b.WriteString("</div>")
 
+	// Toolbar FIRST (buttons)
 	if showToolbar && len(blockOrder) > 0 {
 		b.WriteString("<div class='toolbar'>")
 		for _, block := range blockOrder {
@@ -256,16 +291,8 @@ func renderPage(path, title, subtitle string, blocks fileGroup, blockOrder []str
 		b.WriteString("</div>")
 	}
 
-	// Platform hint box
-	b.WriteString("<div class='infobox'><div>")
-	b.WriteString("<div class='infobox-title'>Quick setup</div>")
-	b.WriteString("<div class='infobox-body'>")
-	b.WriteString("Use <b>Subscribe</b> for webcal subscription (best supported on Apple). ")
-	b.WriteString("For Google Calendar on Android/Windows, ")
-	b.WriteString("<a href='help-google.html'>follow this guide</a>. ")
-	b.WriteString("Alternatively use <b>Copy URL</b> to add the feed manually or <b>Download file</b> for a one-time import.")
-	b.WriteString("</div>")
-	b.WriteString("</div></div>")
+	// Highlight box AFTER the buttons, right before the tables start
+	b.WriteString(highlightBoxHTML())
 
 	b.WriteString("<main>")
 
@@ -370,6 +397,9 @@ func renderGoogleHelpPage(path string) error {
 	b.WriteString("<a class='navlink secondary' href='" + html.EscapeString(sourcePage) + "'>Source page</a>")
 	b.WriteString("</div>")
 
+	// No toolbar here; box can stay near the top
+	b.WriteString(highlightBoxHTML())
+
 	b.WriteString("<main>")
 
 	b.WriteString("<section class='group'>")
@@ -468,37 +498,6 @@ header p{margin:0; color:var(--muted)}
   color: var(--muted);
 }
 
-/* Info box */
-.infobox{
-  max-width:1000px;
-  margin: 6px auto 0;
-  padding: 0 20px;
-}
-.infobox > div{
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-}
-.infobox-title{
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .2px;
-  margin-bottom: 4px;
-}
-.infobox-body{
-  font-size: 11.5px;
-  color: var(--muted);
-}
-.infobox-body a{
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 600;
-}
-.infobox-body a:hover{
-  text-decoration: underline;
-}
-
 .toolbar{
   max-width:1000px; margin:12px auto 0; padding:0 20px 8px;
   display:flex; gap:8px; flex-wrap:wrap; justify-content:center;
@@ -515,6 +514,48 @@ header p{margin:0; color:var(--muted)}
   font-size:10px; padding:1px 6px; border-radius:999px;
   background:rgba(255,255,255,.06); border:1px solid var(--border);
   color:var(--muted);
+}
+
+/* Single highlight box AFTER toolbar */
+.disclaimer{
+  max-width:1000px;
+  margin: 6px auto 0; /* tighter since it's now right under buttons */
+  padding: 0 20px;
+}
+.disclaimer > div{
+  background: rgba(255, 215, 0, .10);
+  border: 1px solid rgba(255, 215, 0, .28);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.disclaimer-title{
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin-bottom: 6px;
+}
+.disclaimer-body{
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.disclaimer-body p{
+  margin: 0 0 8px;
+}
+.disclaimer-body p:last-child{
+  margin-bottom: 0;
+}
+.disclaimer-quick{
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 215, 0, .22);
+}
+.disclaimer-body a{
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+}
+.disclaimer-body a:hover{
+  text-decoration: underline;
 }
 
 main{
