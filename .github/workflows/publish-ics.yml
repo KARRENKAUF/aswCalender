@@ -2,7 +2,19 @@ name: Build and publish ASW ICS
 
 on:
   schedule:
-    - cron: "*/20 6-21 * * 1-6"
+    # --- 30-minute intervals (UTC times for German Winter Time / CET) ---
+    - cron: "0,30 5 * * 1-5"      # 06:00 - 07:00 CET (Mon-Fri)
+    - cron: "0,30 8-9 * * 1-5"    # 09:00 - 11:00 CET (Mon-Fri)
+    - cron: "0 10 * * 1-5"       # 11:00 CET (exact start)
+    - cron: "0,30 12-13 * * 1-5" # 13:00 - 15:00 CET (Mon-Fri)
+    - cron: "0 14 * * 1-5"       # 15:00 CET (exact start)
+    - cron: "0,30 15-20 * * 1-5" # 16:00 - 22:00 CET (Mon-Fri)
+    - cron: "0 21 * * 1-5"       # 22:00 CET (final trigger)
+
+    # --- 15-minute intervals (Fillers in UTC) ---
+    - cron: "*/15 6-7 * * 1-5"   # 07:00 - 09:00 CET (Mon-Fri)
+    - cron: "*/15 10-11 * * 1-5" # 11:00 - 13:00 CET (Mon-Fri)
+    - cron: "*/15 14 * * 1-5"    # 15:00 - 16:00 CET (Mon-Fri)
   workflow_dispatch:
 
 concurrency:
