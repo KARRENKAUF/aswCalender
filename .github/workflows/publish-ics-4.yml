@@ -1,8 +1,8 @@
-name: Build and publish ASW ICS (A-Slot)
+name: Build and publish ASW ICS (D-Slot)
 
 on:
   schedule:
-    - cron: "0 4-20 * * 1-6" # every hour at XX:00 between 4 and 20 every day of the week except Sunday
+    - cron: "45 4-20 * * 1-6" # every hour at XX:45 between 4 and 20 every day of the week except Sunday
   workflow_dispatch:
 
 concurrency:
