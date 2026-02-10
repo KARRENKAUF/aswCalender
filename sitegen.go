@@ -21,6 +21,10 @@ var (
 	// Override via env if you fork/rename the repo.
 	workflowURL = getenv("ASW_WORKFLOW_URL",
 		"https://github.com/KARRENKAUF/aswCalender/blob/main/.github/workflows/publish-ics.yml")
+
+	// GoatCounter endpoint (optional). If empty, tracking is disabled.
+	// Expected format: "https://MYCODE.goatcounter.com/count"
+	goatCounterEndpoint = getenv("ASW_GOATCOUNTER", "https://aswcalander.goatcounter.com/count")
 )
 
 // Computed at runtime from publicDir
@@ -222,6 +226,21 @@ func niceLabel(fname string) string {
 	return strings.ReplaceAll(base, "_", " ")
 }
 
+// GoatCounter snippet (disabled if ASW_GOATCOUNTER is empty)
+// ASW_GOATCOUNTER example: "https://MYCODE.goatcounter.com/count"
+func goatCounterHTML() string {
+	if strings.TrimSpace(goatCounterEndpoint) == "" {
+		return ""
+	}
+
+	// If you want to count localhost during local testing, enable allow_local:
+	// settings := ` data-goatcounter-settings='{"allow_local": true}'`
+	settings := ""
+
+	return "<script data-goatcounter=\"" + html.EscapeString(goatCounterEndpoint) + "\"" + settings +
+		" async src=\"//gc.zgo.at/count.js\"></script>"
+}
+
 // Single highlight box: combines update cadence + quick setup
 func highlightBoxHTML() string {
 	var b strings.Builder
@@ -274,6 +293,10 @@ func renderPage(path, title, subtitle string, blocks fileGroup, blockOrder []str
 	b.WriteString("<meta name='viewport' content='width=device-width, initial-scale=1'>")
 	b.WriteString("<title>" + html.EscapeString(title) + "</title>")
 	b.WriteString("<style>" + siteCSS() + "</style>")
+
+	// GoatCounter (optional)
+	b.WriteString(goatCounterHTML())
+
 	b.WriteString("</head><body>")
 
 	b.WriteString("<header>")
@@ -361,6 +384,11 @@ func renderPage(path, title, subtitle string, blocks fileGroup, blockOrder []str
 					safeName := html.EscapeString(name)
 					safeLabel := html.EscapeString(label)
 
+					// Optional GoatCounter click events:
+					// eventBase := "ics:" + name
+					// data-goatcounter-click='subscribe:'+eventBase etc.
+					eventBase := "ics:" + name
+
 					b.WriteString("<li>")
 					b.WriteString("<div class='row'>")
 					b.WriteString("<div class='row-left'>")
@@ -368,9 +396,9 @@ func renderPage(path, title, subtitle string, blocks fileGroup, blockOrder []str
 					b.WriteString("<div class='small'>" + safeName + "</div>")
 					b.WriteString("</div>")
 					b.WriteString("<div class='actions'>")
-					b.WriteString("<button class='btn btn-primary' onclick=\"subscribe('" + safeName + "')\">Subscribe</button>")
-					b.WriteString("<button class='btn' onclick=\"copyUrl('" + safeName + "', this)\">Copy URL</button>")
-					b.WriteString("<a class='btn' href='ics_files/" + safeName + "'>Download file</a>")
+					b.WriteString("<button class='btn btn-primary' data-goatcounter-click='" + html.EscapeString("subscribe:"+eventBase) + "' onclick=\"subscribe('" + safeName + "')\">Subscribe</button>")
+					b.WriteString("<button class='btn' data-goatcounter-click='" + html.EscapeString("copy:"+eventBase) + "' onclick=\"copyUrl('" + safeName + "', this)\">Copy URL</button>")
+					b.WriteString("<a class='btn' data-goatcounter-click='" + html.EscapeString("download:"+eventBase) + "' href='ics_files/" + safeName + "'>Download file</a>")
 					b.WriteString("</div>")
 					b.WriteString("</div>")
 					b.WriteString("</li>")
@@ -401,6 +429,10 @@ func renderGoogleHelpPage(path string) error {
 	b.WriteString("<meta name='viewport' content='width=device-width, initial-scale=1'>")
 	b.WriteString("<title>" + html.EscapeString(title) + "</title>")
 	b.WriteString("<style>" + siteCSS() + "</style>")
+
+	// GoatCounter (optional)
+	b.WriteString(goatCounterHTML())
+
 	b.WriteString("</head><body>")
 
 	b.WriteString("<header>")
