@@ -276,7 +276,7 @@ func highlightBoxHTML() string {
 
 	b.WriteString("<p class='disclaimer-last-fetched'>")
 	b.WriteString("<span class='last-trigger'><b>Last time trigger:</b></span>")
-	b.WriteString("<img class='cron-badge' src=\"https://api.cron-job.org/jobs/7252968/e21ef3fbf2b1d94d/status-3.svg\" alt=\"Cron job status badge\">")
+	b.WriteString("<img class='cron-badge' src=\"https://api.cron-job.org/jobs/7252968/c331da0b47baa2c3/status-2.svg\" alt=\"Cron job status badge\">")
 	b.WriteString("<span class='last-generated'><b>Last time generated:</b> " + html.EscapeString(lastGeneratedTime) + "</span>")
 	b.WriteString("</p>")
 
