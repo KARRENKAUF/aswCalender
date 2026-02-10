@@ -20,7 +20,7 @@ var (
 	// Link to the GitHub workflow file (used in the highlight box).
 	// Override via env if you fork/rename the repo.
 	workflowURL = getenv("ASW_WORKFLOW_URL",
-		"https://github.com/KARRENKAUF/aswCalender/blob/main/.github/workflows/publish-ics.yml")
+		"https://github.com/KARRENKAUF/aswCalender/blob/main/.github/workflows")
 )
 
 // Computed at runtime from publicDir
@@ -245,7 +245,6 @@ func highlightBoxHTML() string {
 	b.WriteString("Workflow: <a href='" + html.EscapeString(workflowURL) + "' target='_blank' rel='noopener noreferrer'>")
 	b.WriteString(html.EscapeString(".github/workflows"))
 	b.WriteString("</a>.")
-	b.WriteString("Since G")
 	b.WriteString("</p>")
 
 	b.WriteString("<p class='disclaimer-quick'>")
