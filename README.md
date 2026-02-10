@@ -1,15 +1,41 @@
 # Update schedule & reliability notice
 
-This site is generated automatically by GitHub Actions cron jobs that run periodically during weekdays between 06:00 and 22:00 (Germany time).  
-Because GitHub Actions does not guarantee exact timing, scheduled workflows may run a few minutes after their configured time or occasionally be delayed or skipped under load (especially during peak times).
+This site is generated automatically by workflows that are triggered externally via a scheduled HTTP request service (**cron-job.org**) and then execute a **GitHub Actions workflow** (`workflow_dispatch`) that refreshes all data and publishes the site via GitHub Pages.
+
+**Scheduled updates typically run on weekdays between ~06:00 and 22:00 Germany time.**
+Since external schedulers (like *cron-job.org*) and GitHub Actions both operate on a best‑effort basis, **there is no strict guarantee of exact timing**. Delays of a few minutes are normal, and under rare conditions an expected update may be delayed or skipped.
 
 If your calendar app still shows old data:
-- wait for the next scheduled update, typically within ~15 minutes, and  
-- re‑subscribe if necessary.
 
-You can check the current GitHub system status — including Actions and Pages — at: https://www.githubstatus.com/
+* wait for the next scheduled update — typically within ~15 minutes
+* re‑subscribe if necessary.
 
-Workflows: `.github/workflows/*.yml`
+You can check the current GitHub system status — including **Actions** and **Pages** — here: [https://www.githubstatus.com/](https://www.githubstatus.com/)
+
+Workflows used for updates:
+
+```
+.github/workflows/*.yml
+```
+## Alternative: GitHub Cron (Legacy)
+
+GitHub Actions supports a built‑in **`schedule`** trigger using POSIX cron syntax, and workflows can be defined to run on a schedule (e.g., every hour or at set minutes). However:
+
+* The GitHub scheduler only operates on a best‑effort basis — **it does not guarantee exact timing**, and can delay or skip runs under high system load or at busy times.
+* Scheduled workflows are typically limited to a **minimum interval of ~5 minutes** and will not always run precisely at the configured cron time.
+
+For these reasons, automated external triggering via cron‑job.org (or other external cron services) is used here to improve the reliability of regular updates.
+
+---
+
+## Why This Approach
+
+While GitHub’s native cron scheduling is convenient, many users find its reliability insufficient for frequent interval updates (e.g., every ~15 minutes). Official documentation states:
+
+> *The schedule event can be delayed during periods of high loads of GitHub Actions workflow runs. High load times include the start of every hour. If the load is sufficiently high enough, some queued jobs may be dropped.*
+
+In practice, this means that relying solely on GitHub’s internal scheduler can result in missed or delayed runs — even if the workflow appears to be configured correctly. Using an external scheduler to call the `workflow_dispatch` API helps mitigate this and gives more consistent timing.
+
 
 # ASW Calendar Exporter
 

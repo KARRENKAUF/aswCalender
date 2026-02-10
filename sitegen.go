@@ -20,7 +20,7 @@ var (
 	// Link to the GitHub workflow file (used in the highlight box).
 	// Override via env if you fork/rename the repo.
 	workflowURL = getenv("ASW_WORKFLOW_URL",
-		"https://github.com/KARRENKAUF/aswCalender/blob/main/.github/workflows")
+		"https://github.com/KARRENKAUF/aswCalender/blob/main/.github/workflows/publish-ics.yml")
 )
 
 // Computed at runtime from publicDir
@@ -238,12 +238,14 @@ func highlightBoxHTML() string {
 	b.WriteString("<div class='disclaimer-body'>")
 
 	b.WriteString("<p>")
-	b.WriteString("This site is generated automatically by a GitHub Actions cron job. ")
+	b.WriteString("This site is generated automatically by a GitHub Actions workflow triggered externally via a scheduled service (e.g. cron-job.org) to refresh data regularly. ")
 	b.WriteString("Updates typically run on weekdays between <b>06:00 and 22:00</b> (Germany time). ")
-	b.WriteString("Due to how GitHub scheduling works, runs may occur a few minutes after the scheduled time or occasionally be delayed. ")
-	b.WriteString("If your calendar app still shows old data, wait for the next run or re-subscribe. ")
+	b.WriteString("GitHub’s built-in cron scheduler does not guarantee exact timing or that scheduled jobs will run at all — jobs may be delayed or skipped, especially under load. ")
+	b.WriteString("For more reliable periodic updates, an external scheduler triggers this workflow. ")
+	b.WriteString("If your calendar app still shows old data, wait for the next update (typically within ~15 minutes) or re-subscribe. ")
+	b.WriteString("Check current status of GitHub Actions and Pages at <a href=\"https://www.githubstatus.com/\" target=\"_blank\" rel=\"noopener noreferrer\">githubstatus.com</a>. ")
 	b.WriteString("Workflow: <a href='" + html.EscapeString(workflowURL) + "' target='_blank' rel='noopener noreferrer'>")
-	b.WriteString(html.EscapeString(".github/workflows"))
+	b.WriteString(html.EscapeString(".github/workflows/publish-ics.yml"))
 	b.WriteString("</a>.")
 	b.WriteString("</p>")
 
