@@ -1,3 +1,16 @@
+# Update schedule & reliability notice
+
+This site is generated automatically by GitHub Actions cron jobs that run periodically during weekdays between 06:00 and 22:00 (Germany time).  
+Because GitHub Actions does not guarantee exact timing, scheduled workflows may run a few minutes after their configured time or occasionally be delayed or skipped under load (especially during peak times).
+
+If your calendar app still shows old data:
+- wait for the next scheduled update, typically within ~15 minutes, and  
+- re‑subscribe if necessary.
+
+You can check the current GitHub system status — including Actions and Pages — at: https://www.githubstatus.com/
+
+Workflows: `.github/workflows/*.yml`
+
 # ASW Calendar Exporter
 
 This tool fetches ASW block schedules, parses the HTML plans and generates iCalendar (`.ics`) files.

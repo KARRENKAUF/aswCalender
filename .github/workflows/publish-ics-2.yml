@@ -2,11 +2,11 @@ name: Build and publish ASW ICS (B-Slot)
 
 on:
   schedule:
-    - cron: "15 4-20 * * 1-6" # every hour at XX:15 between 4 and 20 every day of the week except Sunday
+    - cron: "22 4-20 * * 1-6" # every hour at XX:22 between 4 and 20 every day of the week except Sunday
   workflow_dispatch:
 
 concurrency:
-  group: asw-pages
+  group: asw-pages-b
   cancel-in-progress: true
 
 permissions:
