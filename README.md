@@ -1,3 +1,5 @@
+![Cron job status](https://api.cron-job.org/jobs/7252968/e21ef3fbf2b1d94d/status-3.svg)
+
 # Update schedule & reliability notice
 
 This site is generated automatically by workflows that are triggered externally via a scheduled HTTP request service (**cron-job.org**) and then execute a **GitHub Actions workflow** (`workflow_dispatch`) that refreshes all data and publishes the site via GitHub Pages.

@@ -256,7 +256,9 @@ func highlightBoxHTML() string {
 	b.WriteString("</p>")
 
 	b.WriteString("<p class='disclaimer-last-fetched'>")
-	b.WriteString("<b>Last updated:</b> " + html.EscapeString(lastGeneratedTime))
+	b.WriteString("<span class='last-trigger'><b>Last time trigger:</b></span>")
+	b.WriteString("<img class='cron-badge' src=\"https://api.cron-job.org/jobs/7252968/e21ef3fbf2b1d94d/status-3.svg\" alt=\"Cron job status badge\">")
+	b.WriteString("<span class='last-generated'><b>Last time generated:</b> " + html.EscapeString(lastGeneratedTime) + "</span>")
 	b.WriteString("</p>")
 
 	b.WriteString("</div>")
@@ -574,10 +576,19 @@ header p{margin:0; color:var(--muted)}
 }
 
 .disclaimer-last-fetched {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 0.9em;
-    font-weight: bolder;
     color: var(--accent);
     margin-top: 0.5em;
+}
+
+.disclaimer-last-fetched img.cron-badge {
+    width: 24px;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 4px;
 }
 
 main{
