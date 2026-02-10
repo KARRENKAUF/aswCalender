@@ -1,4 +1,4 @@
-name: Build and publish ASW ICS (B-Slot)
+name: Build and publish ASW ICS (C-Slot)
 
 on:
   schedule:
