@@ -585,8 +585,8 @@ header p{margin:0; color:var(--muted)}
 }
 
 .disclaimer-last-fetched img.cron-badge {
-    width: 24px;
-    height: auto;
+    width: auto;
+    height: 1.6em;
     vertical-align: middle;
     margin-right: 4px;
 }
