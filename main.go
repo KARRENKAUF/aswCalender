@@ -192,7 +192,7 @@ func getDocument(url string) (*goquery.Document, error) {
 	}
 
 	// Default: HTTP(S)
-	client := &http.Client{Timeout: 20 * time.Second}
+	client := &http.Client{Timeout: 90 * time.Second}
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -217,6 +217,20 @@ func getDocument(url string) (*goquery.Document, error) {
 	}
 
 	return goquery.NewDocumentFromReader(reader)
+}
+
+//Retry mechanism for url fetching 
+func getDocumentWithRetry(url string) (*goquery.Document, error) {
+	maxAttempts := 3
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		doc, err := getDocument(url)
+		if err == nil {
+			return doc, nil
+		}
+		log.Printf("Attempt %d/%d failed for %s: %v", attempt, maxAttempts, url, err)
+		time.Sleep(2 * time.Second)
+	}
+	return nil, fmt.Errorf("all %d attempts failed for %s", maxAttempts, url)
 }
 
 // Resolve href into a full URL depending on mode.
@@ -251,7 +265,7 @@ func resolveURL(href string, isLocalMode bool, localBaseDir string) string {
 // Step 1: Extract schedule links from the main ASW page.
 // This is intentionally flexible because the link text can vary by cohort/block naming.
 func parseMainSchedulePage(url string, isLocalMode bool, localBaseDir string) ([]ScheduleLink, error) {
-	doc, err := getDocument(url)
+	doc, err := getDocumentWithRetry(url)
 	if err != nil {
 		return nil, err
 	}
