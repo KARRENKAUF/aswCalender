@@ -37,7 +37,10 @@ var (
 	// ASW_SCHEDULE_URL="file:///C:/Users/asw/Downloads/stundenplaene.html"
 	//
 	// For now, simplest approach is: keep the overview + detail pages in one folder.
-
+	scheduleURL = getenv("ASW_SCHEDULE_URL",
+		"https://www.asw-ggmbh.de/laufender-studienbetrieb/stundenplaene")
+	baseASWURL = getenv("ASW_BASE_URL",
+		"https://www.asw-ggmbh.de")
 
 	// Output folder for generated .ics files
 	outputDir = getenv("ASW_OUTPUT_DIR", "ics_files")
