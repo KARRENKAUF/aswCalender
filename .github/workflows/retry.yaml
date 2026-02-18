@@ -16,6 +16,6 @@ jobs:
 
     steps:
       - name: Rerun failed workflow
-        run: gh run rerun ${{ github.event.workflow_run.id }} --failed
+        run: gh run rerun ${{ github.event.workflow_run.id }} --failed -R ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
