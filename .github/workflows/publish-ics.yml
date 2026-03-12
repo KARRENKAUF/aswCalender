@@ -6,25 +6,16 @@ on:
   #  - cron: "7,21,37,52 4-20 * * 1-6" # every hour at XX:07, XX:21, XX:37, XX:52 between 4 and 20 every day of the week except Sunday
   workflow_dispatch:
 
-concurrency:
-  group: asw-pages
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   build:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache Go modules
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: |
             ~/.cache/go-build
@@ -34,7 +25,7 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "1.22"
           cache: false
@@ -45,7 +36,7 @@ jobs:
           go run .
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: public
           retention-days: 1
