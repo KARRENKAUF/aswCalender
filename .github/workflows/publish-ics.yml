@@ -5,7 +5,12 @@ on:
   #schedule:
   #  - cron: "7,21,37,52 4-20 * * 1-6" # every hour at XX:07, XX:21, XX:37, XX:52 between 4 and 20 every day of the week except Sunday
   workflow_dispatch:
-
+  
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  
 jobs:
   build:
     timeout-minutes: 5
