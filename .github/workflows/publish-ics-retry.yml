@@ -4,14 +4,22 @@ on:
   workflow_run:
     workflows: ["Build and publish ASW ICS"]
     types: [completed]
-    
+
 permissions:
   contents: read
   pages: write
   id-token: write
-  
+
 jobs:
+  check-status:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Log failure
+        run: echo "Main workflow failed. Starting retry process..."
+
   build:
+    needs: check-status
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
